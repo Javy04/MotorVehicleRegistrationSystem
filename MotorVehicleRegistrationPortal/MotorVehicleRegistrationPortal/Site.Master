@@ -56,7 +56,7 @@
                             <a class="nav-link" runat="server" href="~/LinkVehicle.aspx">Link Vehicle</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" runat="server" href="~/RenewRegistration.aspx">Renew Registration</a>
+                            <a class="nav-link" runat="server" href="~/RenewVehicle.aspx">Renew Registration</a>
                         </li>
                     </ul>
 

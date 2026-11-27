@@ -17,5 +17,14 @@ namespace MotorVehicleRegistrationPortal
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
+
+        protected void Application_Error(object sender, EventArgs e)
+        {
+            Exception ex = Server.GetLastError();
+            if (ex != null)
+            {
+                System.Diagnostics.Trace.TraceError("MVRS Unhandled Exception: " + ex.ToString());
+            }
+        }
     }
 }
