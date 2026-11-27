@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:tns="http://taj.gov.jm/mvrs/insurance" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="http://taj.gov.jm/mvrs/insurance" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://taj.gov.jm/mvrs/insurance">
+      <s:element name="VerifyInsurance">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="plateOrChassis" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="VerifyInsuranceResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="VerifyInsuranceResult" type="tns:InsuranceVerificationResponse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="InsuranceVerificationResponse">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="IsValid" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="Status" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PolicyNumber" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ProviderName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CoverageType" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ExpiryDate" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Message" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="VerifyInsuranceSoapIn">
+    <wsdl:part name="parameters" element="tns:VerifyInsurance" />
+  </wsdl:message>
+  <wsdl:message name="VerifyInsuranceSoapOut">
+    <wsdl:part name="parameters" element="tns:VerifyInsuranceResponse" />
+  </wsdl:message>
+  <wsdl:portType name="InsuranceServiceSoap">
+    <wsdl:operation name="VerifyInsurance">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Verifies motor vehicle insurance policy status using a license plate number or chassis number.</wsdl:documentation>
+      <wsdl:input message="tns:VerifyInsuranceSoapIn" />
+      <wsdl:output message="tns:VerifyInsuranceSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="InsuranceServiceSoap" type="tns:InsuranceServiceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="VerifyInsurance">
+      <soap:operation soapAction="http://taj.gov.jm/mvrs/insurance/VerifyInsurance" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="InsuranceServiceSoap12" type="tns:InsuranceServiceSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="VerifyInsurance">
+      <soap12:operation soapAction="http://taj.gov.jm/mvrs/insurance/VerifyInsurance" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="InsuranceService">
+    <wsdl:port name="InsuranceServiceSoap" binding="tns:InsuranceServiceSoap">
+      <soap:address location="https://localhost:44364/Services/InsuranceService.asmx" />
+    </wsdl:port>
+    <wsdl:port name="InsuranceServiceSoap12" binding="tns:InsuranceServiceSoap12">
+      <soap12:address location="https://localhost:44364/Services/InsuranceService.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

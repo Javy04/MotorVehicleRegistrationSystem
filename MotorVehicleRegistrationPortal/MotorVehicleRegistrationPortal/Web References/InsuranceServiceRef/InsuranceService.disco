@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<discovery xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.xmlsoap.org/disco/">
+  <contractRef ref="https://localhost:44364/Services/InsuranceService.asmx?wsdl" docRef="https://localhost:44364/Services/InsuranceService.asmx" xmlns="http://schemas.xmlsoap.org/disco/scl/" />
+  <soap address="https://localhost:44364/Services/InsuranceService.asmx" xmlns:q1="http://taj.gov.jm/mvrs/insurance" binding="q1:InsuranceServiceSoap" xmlns="http://schemas.xmlsoap.org/disco/soap/" />
+  <soap address="https://localhost:44364/Services/InsuranceService.asmx" xmlns:q2="http://taj.gov.jm/mvrs/insurance" binding="q2:InsuranceServiceSoap12" xmlns="http://schemas.xmlsoap.org/disco/soap/" />
+</discovery>

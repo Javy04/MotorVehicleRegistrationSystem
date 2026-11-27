@@ -1,4 +1,6 @@
 ﻿using System;
+using MotorVehicleRegistrationPortal.InsuranceServiceRef;
+using MotorVehicleRegistrationPortal.FitnessServiceRef;
 
 namespace MotorVehicleRegistrationPortal.Services
 {
@@ -13,105 +15,90 @@ namespace MotorVehicleRegistrationPortal.Services
     public class VehicleVerificationService
     {
         /// <summary>
-        /// Checks whether motor vehicle insurance is up to date using either
-        /// the license plate registration number or chassis number.
-        /// Replace the mock logic below with Member 3's Insurance Web Service call once ready.
+        /// Verifies motor vehicle insurance status via InsuranceService.asmx web service.
         /// </summary>
         public VerificationResult CheckInsuranceStatus(string licensePlate, string chassisNumber)
         {
             string plate = (licensePlate ?? string.Empty).Trim().ToUpperInvariant();
             string chassis = (chassisNumber ?? string.Empty).Trim().ToUpperInvariant();
+            string identifier = !string.IsNullOrEmpty(plate) ? plate : chassis;
 
-            if (plate == "PJ1042" || chassis == "CHS9001001")
+            try
             {
-                return new VerificationResult
+                using (var client = new InsuranceService())
                 {
-                    IsValid = true,
-                    StatusLabel = "Valid",
-                    ExpiryDate = DateTime.Today.AddMonths(8),
-                    Message = "Insurance policy is active and up to date."
-                };
-            }
+                    var response = client.VerifyInsurance(identifier);
 
-            if (plate == "PK2218" || chassis == "CHS9001002")
-            {
-                return new VerificationResult
-                {
-                    IsValid = false,
-                    StatusLabel = "Expired",
-                    ExpiryDate = DateTime.Today.AddDays(-14),
-                    Message = "Insurance policy has expired. Please renew your insurance before renewing registration."
-                };
-            }
+                    // Fallback to chassis number if plate lookup returned Not Found and chassis is available
+                    if (!response.IsValid && response.Status == "Not Found" &&
+                        !string.IsNullOrEmpty(plate) && !string.IsNullOrEmpty(chassis))
+                    {
+                        response = client.VerifyInsurance(chassis);
+                    }
 
-            if (plate == "PM3390" || chassis == "CHS9001003")
-            {
-                return new VerificationResult
-                {
-                    IsValid = true,
-                    StatusLabel = "Valid",
-                    ExpiryDate = DateTime.Today.AddMonths(5),
-                    Message = "Insurance policy is active and up to date."
-                };
-            }
+                    DateTime parsedExpiry;
+                    DateTime? expiryDate = DateTime.TryParse(response.ExpiryDate, out parsedExpiry)
+                        ? (DateTime?)parsedExpiry
+                        : null;
 
-            if (plate == "PN4481" || chassis == "CHS9001004")
+                    return new VerificationResult
+                    {
+                        IsValid = response.IsValid,
+                        StatusLabel = response.Status,
+                        ExpiryDate = expiryDate,
+                        Message = response.Message
+                    };
+                }
+            }
+            catch (Exception ex)
             {
                 return new VerificationResult
                 {
                     IsValid = false,
-                    StatusLabel = "Expired",
-                    ExpiryDate = DateTime.Today.AddMonths(-2),
-                    Message = "Insurance policy has expired. Please renew your insurance before renewing registration."
+                    StatusLabel = "Service Error",
+                    ExpiryDate = null,
+                    Message = "Unable to reach the Insurance Verification Service: " + ex.Message
                 };
             }
-
-            return new VerificationResult
-            {
-                IsValid = false,
-                StatusLabel = "Not Found",
-                ExpiryDate = null,
-                Message = "No valid insurance record was found for this license plate or chassis number."
-            };
         }
 
         /// <summary>
-        /// Checks whether motor vehicle fitness is up to date using the chassis number.
-        /// Replace the mock logic below with Member 3's Fitness Web Service call once ready.
+        /// Verifies motor vehicle certificate of fitness status via live FitnessService.asmx web service.
         /// </summary>
         public VerificationResult CheckFitnessStatus(string chassisNumber)
         {
             string chassis = (chassisNumber ?? string.Empty).Trim().ToUpperInvariant();
 
-            if (chassis == "CHS9001001" || chassis == "CHS9001002")
+            try
             {
-                return new VerificationResult
+                using (var client = new FitnessService())
                 {
-                    IsValid = true,
-                    StatusLabel = "Valid",
-                    ExpiryDate = DateTime.Today.AddMonths(10),
-                    Message = "Certificate of fitness is active and up to date."
-                };
-            }
+                    var response = client.VerifyFitness(chassis);
 
-            if (chassis == "CHS9001003" || chassis == "CHS9001004")
+                    DateTime parsedExpiry;
+                    DateTime? expiryDate = DateTime.TryParse(response.ExpiryDate, out parsedExpiry)
+                        ? (DateTime?)parsedExpiry
+                        : null;
+
+                    return new VerificationResult
+                    {
+                        IsValid = response.IsValid,
+                        StatusLabel = response.Status,
+                        ExpiryDate = expiryDate,
+                        Message = response.Message
+                    };
+                }
+            }
+            catch (Exception ex)
             {
                 return new VerificationResult
                 {
                     IsValid = false,
-                    StatusLabel = "Expired",
-                    ExpiryDate = DateTime.Today.AddDays(-30),
-                    Message = "Certificate of fitness has expired. Please pass a fitness inspection before renewing registration."
+                    StatusLabel = "Service Error",
+                    ExpiryDate = null,
+                    Message = "Unable to reach the Fitness Verification Service: " + ex.Message
                 };
             }
-
-            return new VerificationResult
-            {
-                IsValid = false,
-                StatusLabel = "Not Found",
-                ExpiryDate = null,
-                Message = "No valid fitness certificate was found for this chassis number."
-            };
         }
     }
 }

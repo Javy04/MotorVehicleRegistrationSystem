@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<discovery xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.xmlsoap.org/disco/">
+  <contractRef ref="https://localhost:44364/Services/FitnessService.asmx?wsdl" docRef="https://localhost:44364/Services/FitnessService.asmx" xmlns="http://schemas.xmlsoap.org/disco/scl/" />
+  <soap address="https://localhost:44364/Services/FitnessService.asmx" xmlns:q1="http://taj.gov.jm/mvrs/fitness" binding="q1:FitnessServiceSoap" xmlns="http://schemas.xmlsoap.org/disco/soap/" />
+  <soap address="https://localhost:44364/Services/FitnessService.asmx" xmlns:q2="http://taj.gov.jm/mvrs/fitness" binding="q2:FitnessServiceSoap12" xmlns="http://schemas.xmlsoap.org/disco/soap/" />
+</discovery>
